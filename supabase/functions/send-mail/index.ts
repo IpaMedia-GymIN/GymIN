@@ -1,8 +1,8 @@
 // GymIN · send-mail: invio email reali (Brevo) dalla sezione Posta.
 //
 // Sicurezza:
-// - accetta SOLO utenti dello staff autenticati: il token in Authorization viene verificato
-//   con Supabase Auth. La chiave anon è pubblica (sta nel sito) e da sola NON basta:
+// - accetta SOLO utenti dello staff: il token in Authorization viene verificato con Supabase Auth
+//   e l'utente deve essere nella tabella staff (is_staff). La chiave anon è pubblica (sta nel sito) e da sola NON basta:
 //   prima chiunque la conoscesse poteva inviare email a nome della palestra.
 // - CORS limitato alle origini del gestionale (ALLOWED_ORIGINS, separate da virgola).
 // - limiti di dimensione su destinatario, oggetto e contenuto.
@@ -38,7 +38,14 @@ async function utenteStaff(req: Request): Promise<{ id: string; email?: string }
   const r = await fetch(`${url}/auth/v1/user`, { headers: { apikey: anon, Authorization: `Bearer ${token}` } });
   if (!r.ok) return null;
   const u = await r.json().catch(() => null);
-  return u?.id && u?.aud === "authenticated" ? u : null;
+  if (!(u?.id && u?.aud === "authenticated")) return null;
+  // autenticato non basta: deve essere nella tabella staff (funzione is_staff, migration staff_ruoli)
+  const s = await fetch(`${url}/rest/v1/rpc/is_staff`, {
+    method: "POST",
+    headers: { apikey: anon, Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: "{}",
+  });
+  return s.ok && (await s.json().catch(() => false)) === true ? u : null;
 }
 
 Deno.serve(async (req) => {

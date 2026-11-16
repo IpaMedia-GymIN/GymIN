@@ -7,22 +7,31 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const migr = join(here, '..', '..', '..', 'supabase', 'migrations');
 export const URL = process.env.TEST_DATABASE_URL;
+export const STAFF = '00000000-0000-0000-0000-0000000000aa';
+export const ADMIN = '00000000-0000-0000-0000-0000000000ad';
+export const ESTRANEO = '00000000-0000-0000-0000-0000000000ee';
 
 export async function preparaDb() {
   const c = new pg.Client({ connectionString: URL });
   await c.connect();
-  await c.query('drop schema if exists public cascade; drop schema if exists auth cascade; create schema public;');
-  await c.query(readFileSync(join(here, 'supabase-stub.sql'), 'utf8'));
-  for (const f of readdirSync(migr).filter((x) => x.endsWith('.sql') && !x.includes('_seed')).sort()) {
-    try { await c.query(readFileSync(join(migr, f), 'utf8')); } catch (e) { throw new Error(`${f}: ${e.message}`); }
+  try {
+    await c.query('drop schema if exists public cascade; drop schema if exists auth cascade; drop schema if exists monitor cascade; create schema public;');
+    await c.query(readFileSync(join(here, 'supabase-stub.sql'), 'utf8'));
+    for (const f of readdirSync(migr).filter((x) => x.endsWith('.sql') && !x.includes('_seed')).sort()) {
+      try { await c.query(readFileSync(join(migr, f), 'utf8')); } catch (e) { throw new Error(`${f}: ${e.message}`); }
+    }
+    // utenti di prova: uno staff (quello usato da come()), un admin; ESTRANEO è autenticato ma non è staff
+    await c.query(`insert into auth.users (id, email) values ($1, 'staff@example.com'), ($2, 'admin@example.com'), ($3, 'estraneo@example.com')`, [STAFF, ADMIN, ESTRANEO]);
+    await c.query(`insert into staff (user_id, ruolo) values ($1, 'staff'), ($2, 'admin')`, [STAFF, ADMIN]);
+  } finally {
+    await c.end();   // anche in caso di errore: una connessione aperta terrebbe appeso il processo dei test
   }
-  await c.end();
   const pool = new pg.Pool({ connectionString: URL, max: 20 });
   return pool;
 }
 
 // Esegue fn in una transazione "come" un ruolo Supabase (anon / authenticated con un uid)
-export async function come(pool, ruolo, fn, uid = '00000000-0000-0000-0000-0000000000aa') {
+export async function come(pool, ruolo, fn, uid = STAFF) {
   const c = await pool.connect();
   try {
     await c.query('begin');

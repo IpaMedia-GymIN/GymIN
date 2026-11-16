@@ -1,0 +1,46 @@
+name: Test
+
+# Fa girare i test su ogni PR e su main, prima che il sito venga pubblicato.
+# I test del database usano un Postgres usa-e-getta e applicano TUTTE le migrazioni da zero:
+# se una migrazione non parte su un database vuoto, qui si vede subito.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test gestionale e mailer
+        run: |
+          npm ci
+          node --test mailer/manual.test.js web/js/qrmail.test.js web/js/mailerHeaders.test.cjs
+
+      - name: Test terminale d'ingresso
+        working-directory: accessi
+        run: |
+          npm ci
+          npm test
+
+      - name: Test database (migrazioni, accessi, permessi)
+        working-directory: accessi
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+        run: npm run test:db
