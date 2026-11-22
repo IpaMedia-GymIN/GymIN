@@ -8,8 +8,8 @@ per ripartire senza perdere il contesto.
 abbonamenti, entrate/accessi, promemoria email, e una **Dashboard** con
 fatturato, contratti attivi/scaduti e soci in scadenza.
 
-- **Repo:** https://github.com/loriscuba/gymin (si lavora direttamente su `main`)
-- **Demo live:** https://loriscuba.github.io/GymIN/ (GitHub Pages, deploy via Actions)
+- **Repo:** https://github.com/IpaMedia-GymIN/GymIN (si lavora direttamente su `main`)
+- **Demo live:** https://gymin.ipamedia.it/ (Cloudflare Workers, vedi `deploy/CLOUDFLARE.md`); test https://test.gymin.ipamedia.it/
 - **Stack:** HTML/CSS/JS vanilla (no framework), tema chiaro/scuro, accento arancione `#f4511e`.
   Predisposto per **Supabase** (Postgres + Auth + RLS + RPC) con **fallback demo offline**;
   email con **Mailpit + nodemailer + node-cron** (solo lato server/VM).
@@ -49,7 +49,7 @@ Obiettivo: una VM Always Free (ARM Ampere) che ospita più progetti demo dietro 
   default, firewall 22/80/443, subnet pubblica) **e** la VM ARM, riprovando
   finché c'è capacità. Idempotente.
   ```bash
-  git clone https://github.com/loriscuba/gymin.git
+  git clone https://github.com/IpaMedia-GymIN/GymIN.git
   bash gymin/deploy/oci-provision.sh
   # opzioni: OCPUS=2 MEMORY_GB=12 DISPLAY_NAME=hub SLEEP_SECONDS=180 bash ...
   ```

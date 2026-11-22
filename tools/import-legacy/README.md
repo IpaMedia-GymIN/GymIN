@@ -135,7 +135,7 @@ cruscotto, codice condiviso in `web/js/importlogic.js`). Solo abbonamento corren
 
 Sul PC Win 11 serve Node 18+ e **solo** una cartella (es. `C:\GymIN-import`) con `auto-import.mjs`,
 `auto-import.bat` e `package.json` di questa cartella: le regole (`legacydbf.js`, `importlogic.js`) lo script
-le scarica a ogni avvio dall'app pubblicata (`GYMIN_WEB_URL`, default `https://loriscuba.github.io/GymIN/js/`),
+le scarica a ogni avvio dall'app pubblicata (`GYMIN_WEB_URL`, default `https://gymin.ipamedia.it/js/`),
 quindi sono sempre quelle del cruscotto online. Dal repo si può usare `--local` per i file di `web/js`.
 
 1. nella cartella: `npm install`

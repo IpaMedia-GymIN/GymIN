@@ -26,7 +26,7 @@ const val = (name, def) => { const i = args.indexOf(name); return i >= 0 && args
 const DIR = val('--dir', process.env.GYMIN_IMPORT_DIR);
 const DRY = args.includes('--dry-run');
 const SOLO_SOCI = args.includes('--solo-soci');
-const WEB = process.env.GYMIN_WEB_URL || 'https://loriscuba.github.io/GymIN/js/';
+const WEB = process.env.GYMIN_WEB_URL || 'https://gymin.ipamedia.it/js/';
 const log = (m) => console.log(`[${new Date().toLocaleString('it-IT')}] ${m}`);
 
 async function fetchAll(supa, table, select, modify = (q) => q) {

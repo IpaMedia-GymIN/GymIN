@@ -11,15 +11,18 @@
 // opzionale ALLOWED_ORIGINS. SUPABASE_URL e SUPABASE_ANON_KEY sono forniti da Supabase.
 // Deploy: supabase functions deploy send-mail
 
-const ORIGINI = (Deno.env.get("ALLOWED_ORIGINS") || "https://loriscuba.github.io,http://localhost:5173")
+const ORIGINI = (Deno.env.get("ALLOWED_ORIGINS") ||
+  "https://gymin.ipamedia.it,https://test.gymin.ipamedia.it,https://ipamedia-gymin.github.io,https://loriscuba.github.io,http://localhost:5173")
   .split(",").map((o) => o.trim()).filter(Boolean);
+// ogni palestra cliente ha il suo sottodominio *.gymin.ipamedia.it
+const origineAmmessa = (o: string) => ORIGINI.includes(o) || /^https:\/\/[a-z0-9-]+\.gymin\.ipamedia\.it$/.test(o);
 
 const EMAIL_RE = /^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/;
 
 function cors(req: Request): Record<string, string> {
   const origin = req.headers.get("Origin") || "";
   return {
-    "Access-Control-Allow-Origin": ORIGINI.includes(origin) ? origin : ORIGINI[0],
+    "Access-Control-Allow-Origin": origineAmmessa(origin) ? origin : ORIGINI[0],
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Vary": "Origin",

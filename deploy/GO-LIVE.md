@@ -30,7 +30,7 @@ Guida operativa per pubblicare **test** (GitHub Pages + Supabase) e **produzione
 Il deploy pubblica dal branch **main**. Le funzionalità nuove (import legacy, soci
 senza abbonamento, config.js su Pages) stanno nella PR #2: **va unita a main prima**.
 
-1. Apri la PR: https://github.com/loriscuba/GymIN/pull/2
+1. Apri la PR: https://github.com/IpaMedia-GymIN/GymIN/pull/2
 2. Togli lo stato *draft* → **Ready for review** → **Merge**.
 3. Sul PC: `git checkout main && git pull`.
 
@@ -81,7 +81,7 @@ senza abbonamento, config.js su Pages) stanno nella PR #2: **va unita a main pri
    (oppure fai un push su `main`). Il workflow genera `web/config.js` dalle Variables
    e pubblica.
 4. Apri l'URL Pages (Settings → Pages mostra il link, tipo
-   `https://loriscuba.github.io/GymIN/`). Deve comparire la **schermata di login**
+   `https://ipamedia-gymin.github.io/GymIN/`; dopo il passaggio a Cloudflare: `https://gymin.ipamedia.it/`, vedi `deploy/CLOUDFLARE.md`). Deve comparire la **schermata di login**
    (non più il badge “demo”): accedi con l'utente staff creato al §1.4.
 
 > Chiunque può raggiungere la pagina di login (il sito è pubblico), ma **serve un
@@ -105,7 +105,7 @@ nel frontend né nel repo.
 
 ### 4.1 Crea la VM (dalla OCI Cloud Shell del tenant Amsterdam)
 ```bash
-git clone https://github.com/loriscuba/GymIN.git
+git clone https://github.com/IpaMedia-GymIN/GymIN.git
 bash GymIN/deploy/oci-provision.sh          # crea rete + VM ARM, riprova se "out of capacity"
 ```
 Al successo stampa **IP pubblico** e il comando `ssh`. Se la rete esiste già e manca
@@ -116,7 +116,7 @@ solo la VM: `bash GymIN/deploy/oci-launch-retry.sh`.
 
 ### 4.2 Prepara la VM e pubblica GymIN (via SSH sulla VM)
 ```bash
-git clone https://github.com/loriscuba/GymIN.git ~/gymin
+git clone https://github.com/IpaMedia-GymIN/GymIN.git ~/gymin
 cd ~/gymin
 bash deploy/host-init.sh --node        # nginx, certbot, rsync, firewall + Node.js (per il mailer)
 sudo bash deploy/site.sh gymin <IP_PUBBLICO> --src ~/gymin
@@ -212,8 +212,8 @@ Da fare a mano nella dashboard Supabase (non si possono fare da codice):
 2. **Authentication → Multi-Factor**: abilita **TOTP** e attivalo per ogni operatore.
 3. **Authentication → Attack Protection**: *Leaked password protection* ON (piano Pro)
    e password di almeno 12 caratteri.
-4. **Edge Functions → Secrets**: se il sito non è su `https://loriscuba.github.io`,
-   imposta `ALLOWED_ORIGINS` (es. `https://gestionale.tuodominio.it`).
+4. **Edge Functions → Secrets**: imposta `ALLOWED_ORIGINS` con gli indirizzi del sito
+   (es. `https://gymin.ipamedia.it,https://test.gymin.ipamedia.it`). I sottodomini `*.gymin.ipamedia.it` sono sempre ammessi.
 5. **Advisors → Security Advisor**: devono restare solo gli avvisi sulle funzioni
    `terminale_*` (pubbliche per progetto, protette dal token del terminale) e su quelle `staff_*`.
 

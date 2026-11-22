@@ -6,7 +6,7 @@
 #   console Oracle). Lì l'OCI CLI è già autenticata: non devi configurare niente.
 #
 # USO:
-#   git clone https://github.com/loriscuba/gymin.git
+#   git clone https://github.com/IpaMedia-GymIN/GymIN.git
 #   bash gymin/deploy/oci-provision.sh
 #
 #   # opzioni (variabili d'ambiente):
@@ -166,7 +166,7 @@ while true; do
       echo "  IP pubblico: $IP"
       echo "  Connettiti:  ssh -i ${SSH_PUB%.pub} ubuntu@$IP"
     fi
-    echo "  Poi sulla VM:  git clone https://github.com/loriscuba/gymin.git ~/gymin && bash ~/gymin/deploy/host-init.sh"
+    echo "  Poi sulla VM:  git clone https://github.com/IpaMedia-GymIN/GymIN.git ~/gymin && bash ~/gymin/deploy/host-init.sh"
     break
   else
     if printf '%s' "$OUT" | grep -qiE 'Out of host capacity|capacit'; then

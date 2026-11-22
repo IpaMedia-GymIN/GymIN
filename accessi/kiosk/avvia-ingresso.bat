@@ -10,7 +10,7 @@ rem ======================================================================
 
 rem ---- CONFIGURAZIONE --------------------------------------------------
 rem Indirizzo della pagina /ingresso (produzione)
-set "URL_INGRESSO=https://loriscuba.github.io/GymIN/accessi/ingresso/"
+set "URL_INGRESSO=https://gymin.ipamedia.it/accessi/ingresso/"
 rem Cartella del profilo Chrome dedicato al terminale
 set "BASE=%LOCALAPPDATA%\GymIN-Ingresso"
 set "PROFILO=%BASE%\chrome-profilo"

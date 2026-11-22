@@ -1,8 +1,8 @@
 name: Deploy web su GitHub Pages
 
 # Pubblica su GitHub Pages:
-#   - branch main -> https://loriscuba.github.io/GymIN/        (produzione)
-#   - branch test -> https://loriscuba.github.io/GymIN/test/   (ambiente di test)
+#   - branch main -> https://ipamedia-gymin.github.io/GymIN/        (produzione)
+#   - branch test -> https://ipamedia-gymin.github.io/GymIN/test/   (ambiente di test)
 # Gira sempre dal branch main (unico ammesso a pubblicare su Pages) e prende
 # entrambi i branch; un push su "test" lo avvia tramite test-deploy.yml.
 on:
