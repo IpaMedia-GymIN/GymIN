@@ -297,7 +297,7 @@ La pubblicazione è automatica su Cloudflare Workers insieme a GymIN (`scripts/b
 - <https://gymin.ipamedia.it/accessi/ingresso/>
 - <https://gymin.ipamedia.it/accessi/gestione/>
 - **Ambiente di test** (progetto Supabase "GymIN demo", fascia arancione "AMBIENTE DI TEST"):
-  <https://test.gymin.ipamedia.it/accessi/ingresso/> e <https://test.gymin.ipamedia.it/accessi/gestione/>.
+  <https://test-gymin.ipamedia.it/accessi/ingresso/> e <https://test-gymin.ipamedia.it/accessi/gestione/>.
   Viene costruito dal branch `test` se contiene `accessi/`, altrimenti da `main`. Il token di un terminale vale solo nel proprio schema: un terminale creato in test non funziona in produzione, e viceversa.
 
 La build (`npm run build`) copia `app/` in `dist/` e genera `config.js` dalle Variables `SUPABASE_URL` e `SUPABASE_ANON_KEY` del repo (in mancanza, dal `web/config.js` di GymIN). Aggiunge anche la versione ai link, per invalidare la cache.

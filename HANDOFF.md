@@ -9,7 +9,7 @@ abbonamenti, entrate/accessi, promemoria email, e una **Dashboard** con
 fatturato, contratti attivi/scaduti e soci in scadenza.
 
 - **Repo:** https://github.com/IpaMedia-GymIN/GymIN (si lavora direttamente su `main`)
-- **Demo live:** https://gymin.ipamedia.it/ (Cloudflare Workers, vedi `deploy/CLOUDFLARE.md`); test https://test.gymin.ipamedia.it/
+- **Demo live:** https://gymin.ipamedia.it/ (Cloudflare Workers, vedi `deploy/CLOUDFLARE.md`); test https://test-gymin.ipamedia.it/
 - **Stack:** HTML/CSS/JS vanilla (no framework), tema chiaro/scuro, accento arancione `#f4511e`.
   Predisposto per **Supabase** (Postgres + Auth + RLS + RPC) con **fallback demo offline**;
   email con **Mailpit + nodemailer + node-cron** (solo lato server/VM).

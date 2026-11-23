@@ -5,8 +5,8 @@ un sottodominio per palestra cliente, un ambiente di test separato con il suo da
 
 | Ramo GitHub | Worker | Indirizzo | Supabase |
 |---|---|---|---|
-| `main` | `gymin` | `gymin.ipamedia.it` e `*.gymin.ipamedia.it` (es. `kinesia.gymin.ipamedia.it`) | GymIN produzione |
-| `test` | `gymin-test` | `test.gymin.ipamedia.it` | GymIN demo |
+| `main` | `gymin` | `gymin.ipamedia.it` e `*-gymin.ipamedia.it` (es. `kinesia-gymin.ipamedia.it`) | GymIN produzione |
+| `test` | `gymin-test` | `test-gymin.ipamedia.it` | GymIN demo |
 | ogni altro ramo / PR | `gymin-test` (anteprima) | `<versione>-gymin-test.<account>.workers.dev` | GymIN demo |
 
 ## Come funziona
@@ -38,20 +38,21 @@ Si creano **due** Worker collegati alla stessa repo:
 Il nome del Worker nella dashboard deve coincidere con quello di `wrangler.jsonc`
 (`gymin` e `gymin-test`), altrimenti la build si ferma.
 
-## DNS e certificati (da sapere prima di comprare)
+## DNS e certificati
+
+Tutti gli indirizzi sono sottodomini **di primo livello** di `ipamedia.it` (decisione del 23 novembre),
+così li copre il certificato gratuito di Cloudflare (Universal SSL: `ipamedia.it` e `*.ipamedia.it`).
+Niente secondo livello tipo `kinesia.gymin.ipamedia.it`, che non sarebbe coperto.
 
 - Il dominio `ipamedia.it` deve avere i DNS su Cloudflare.
-- `test.gymin.ipamedia.it` è un *Custom Domain* del Worker: Cloudflare crea da solo il record DNS e il certificato.
-- Per `gymin.ipamedia.it` e `*.gymin.ipamedia.it` servono due record DNS **proxied** (nuvola arancione),
-  per esempio `AAAA gymin 100::` e `AAAA *.gymin 100::`.
-- **Attenzione al certificato**: il certificato gratuito (Universal SSL) copre `ipamedia.it` e un solo
-  livello (`*.ipamedia.it`). `gymin.ipamedia.it` è coperto, ma `kinesia.gymin.ipamedia.it` è al secondo
-  livello e **non** lo è. Strade possibili:
-  1. aggiungere ogni palestra come *Custom Domain* del Worker (certificato gratuito, una riga in
-     `wrangler.jsonc` per palestra);
-  2. Advanced Certificate Manager (a pagamento, circa 10 $/mese) per `*.gymin.ipamedia.it`;
-  3. nomi a un solo livello, es. `kinesia-gymin.ipamedia.it`.
-  Finché c'è una sola palestra, la 1 è la più semplice.
+- `test-gymin.ipamedia.it` è un *Custom Domain* del Worker `gymin-test`: Cloudflare crea da solo il record DNS.
+  Ha la precedenza sulla regola `*-gymin.ipamedia.it` della produzione.
+- La regola `*-gymin.ipamedia.it/*` del Worker `gymin` vale per ogni palestra (`kinesia-gymin`, `altra-gymin`, ...),
+  ma ogni nome deve esistere nel DNS come record **proxied** (nuvola arancione). Per ogni nuova palestra:
+  DNS → Add record → `AAAA`, nome `<palestra>-gymin`, indirizzo `100::`, Proxied. Serve lo stesso record per `gymin`.
+  In alternativa un solo record `*` (`AAAA * 100::`, proxied) evita di aggiungerli, ma porta su Cloudflare
+  qualunque nome di `ipamedia.it` non definito: meglio un record per palestra.
+- I nomi di palestra non devono finire con `-gymin` per caso in altri prodotti (es. un sito `xxx-gymin` di BeachIn).
 
 ## Variabili e segreti da impostare
 
@@ -70,7 +71,7 @@ Nessun valore vero va scritto nel repo. Dove si trova ciascun valore:
 La chiave publishable è pubblica per natura (protetta dalle regole RLS); la si mette come Secret
 solo perché così sopravvive ai deploy e non finisce nel repo. **Mai** la secret key (`sb_secret_...`) o la service_role.
 
-Cloudflare Access (Zero Trust → Access → Applications): un'applicazione per `test.gymin.ipamedia.it`
+Cloudflare Access (Zero Trust → Access → Applications): un'applicazione per `test-gymin.ipamedia.it`
 e una per le anteprime `*-gymin-test.<account>.workers.dev`, accesso solo a Loris. Nessun segreto da copiare.
 
 ### GitHub (`IpaMedia-GymIN/GymIN` → Settings → Secrets and variables → Actions)
@@ -90,7 +91,7 @@ Dopo il trasferimento controllare che ci siano ancora.
   facoltativi `ALLOWED_ORIGINS` e `REPORT_TO`. `SUPABASE_URL`, `SUPABASE_ANON_KEY` e
   `SUPABASE_SERVICE_ROLE_KEY` li fornisce Supabase.
 - Authentication → URL Configuration: Site URL `https://gymin.ipamedia.it`, Redirect URLs
-  `https://gymin.ipamedia.it/**`, `https://*.gymin.ipamedia.it/**` (sul progetto demo: `https://test.gymin.ipamedia.it/**`).
+  `https://gymin.ipamedia.it/**`, `https://*-gymin.ipamedia.it/**` (sul progetto demo: `https://test-gymin.ipamedia.it/**`).
 - Tabella `report_config`, colonna `url`: indirizzo della funzione `report-serale` del nuovo progetto.
 
 ### PC della palestra (`C:\GymIN-import\.env`)

@@ -213,7 +213,7 @@ Da fare a mano nella dashboard Supabase (non si possono fare da codice):
 3. **Authentication → Attack Protection**: *Leaked password protection* ON (piano Pro)
    e password di almeno 12 caratteri.
 4. **Edge Functions → Secrets**: imposta `ALLOWED_ORIGINS` con gli indirizzi del sito
-   (es. `https://gymin.ipamedia.it,https://test.gymin.ipamedia.it`). I sottodomini `*.gymin.ipamedia.it` sono sempre ammessi.
+   (es. `https://gymin.ipamedia.it,https://test-gymin.ipamedia.it`). I sottodomini `*-gymin.ipamedia.it` sono sempre ammessi.
 5. **Advisors → Security Advisor**: devono restare solo gli avvisi sulle funzioni
    `terminale_*` (pubbliche per progetto, protette dal token del terminale) e su quelle `staff_*`.
 

@@ -1,8 +1,8 @@
 // Cloudflare Workers con file statici per GymIN.
 // Guida completa (variabili, segreti, DNS, collegamento a GitHub): deploy/CLOUDFLARE.md
 //
-//   produzione: ramo main → Worker "gymin"      → gymin.ipamedia.it e *.gymin.ipamedia.it
-//   test:       ramo test → Worker "gymin-test" → test.gymin.ipamedia.it (+ anteprime delle PR)
+//   produzione: ramo main → Worker "gymin"      → gymin.ipamedia.it e *-gymin.ipamedia.it
+//   test:       ramo test → Worker "gymin-test" → test-gymin.ipamedia.it (+ anteprime delle PR)
 //
 // Build:  bash scripts/build-cloudflare.sh      (crea dist/: web + accessi)
 // Deploy: npx wrangler deploy                    (produzione)
@@ -35,7 +35,7 @@
   "preview_urls": false,
   "routes": [
     { "pattern": "gymin.ipamedia.it/*", "zone_name": "ipamedia.it" },
-    { "pattern": "*.gymin.ipamedia.it/*", "zone_name": "ipamedia.it" }
+    { "pattern": "*-gymin.ipamedia.it/*", "zone_name": "ipamedia.it" }
   ],
   "vars": {
     "GYMIN_ENV": "produzione"
@@ -45,10 +45,10 @@
   "env": {
     "test": {
       "name": "gymin-test",
-      // dominio personalizzato: ha la precedenza sulla regola *.gymin.ipamedia.it della produzione
+      // dominio personalizzato: ha la precedenza sulla regola *-gymin.ipamedia.it della produzione
       // e riceve il suo certificato gratuito
       "routes": [
-        { "pattern": "test.gymin.ipamedia.it", "custom_domain": true }
+        { "pattern": "test-gymin.ipamedia.it", "custom_domain": true }
       ],
       "workers_dev": true,
       "preview_urls": true,

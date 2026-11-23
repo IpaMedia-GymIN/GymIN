@@ -12,10 +12,10 @@
 // Deploy: supabase functions deploy send-mail
 
 const ORIGINI = (Deno.env.get("ALLOWED_ORIGINS") ||
-  "https://gymin.ipamedia.it,https://test.gymin.ipamedia.it,https://ipamedia-gymin.github.io,https://loriscuba.github.io,http://localhost:5173")
+  "https://gymin.ipamedia.it,https://test-gymin.ipamedia.it,https://ipamedia-gymin.github.io,https://loriscuba.github.io,http://localhost:5173")
   .split(",").map((o) => o.trim()).filter(Boolean);
-// ogni palestra cliente ha il suo sottodominio *.gymin.ipamedia.it
-const origineAmmessa = (o: string) => ORIGINI.includes(o) || /^https:\/\/[a-z0-9-]+\.gymin\.ipamedia\.it$/.test(o);
+// ogni palestra cliente ha il suo sottodominio <palestra>-gymin.ipamedia.it (un solo livello, coperto dal certificato gratuito)
+const origineAmmessa = (o: string) => ORIGINI.includes(o) || /^https:\/\/[a-z0-9-]+-gymin\.ipamedia\.it$/.test(o);
 
 const EMAIL_RE = /^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/;
 
