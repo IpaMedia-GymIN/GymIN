@@ -2,7 +2,7 @@
 # Infra · pubblica/aggiorna UN progetto sulla VM (vhost Nginx per sottodominio).
 # Riusabile per qualsiasi repo con una cartella statica (default: web/).
 #
-#   sudo bash deploy/site.sh gymin gymin.miodominio.it --repo https://github.com/loriscuba/GymIN.git
+#   sudo bash deploy/site.sh gymin gymin.miodominio.it --repo https://github.com/IpaMedia-GymIN/GymIN.git
 #   sudo bash deploy/site.sh sito2 sito2.miodominio.it --repo <url> --webdir public --branch main
 #   sudo bash deploy/site.sh gymin gymin.miodominio.it --src /home/ubuntu/gymin   # repo già presente
 set -euo pipefail

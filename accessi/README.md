@@ -292,12 +292,12 @@ npm run test:db   # funzioni SQL su un Postgres VERO: avvia un cluster temporane
 
 ## Deploy
 
-La pubblicazione è automatica su GitHub Pages insieme a GymIN (`.github/workflows/pages.yml`, passo "Build Accessi"):
+La pubblicazione è automatica su Cloudflare Workers insieme a GymIN (`scripts/build-cloudflare.sh`, vedi `deploy/CLOUDFLARE.md`):
 
-- <https://loriscuba.github.io/GymIN/accessi/ingresso/>
-- <https://loriscuba.github.io/GymIN/accessi/gestione/>
-- **Ambiente di test** (stesso progetto Supabase, solo schema `test`, fascia arancione "AMBIENTE DI TEST"):
-  <https://loriscuba.github.io/GymIN/test/accessi/ingresso/> e <https://loriscuba.github.io/GymIN/test/accessi/gestione/>.
+- <https://gymin.ipamedia.it/accessi/ingresso/>
+- <https://gymin.ipamedia.it/accessi/gestione/>
+- **Ambiente di test** (progetto Supabase "GymIN demo", fascia arancione "AMBIENTE DI TEST"):
+  <https://test-gymin.ipamedia.it/accessi/ingresso/> e <https://test-gymin.ipamedia.it/accessi/gestione/>.
   Viene costruito dal branch `test` se contiene `accessi/`, altrimenti da `main`. Il token di un terminale vale solo nel proprio schema: un terminale creato in test non funziona in produzione, e viceversa.
 
 La build (`npm run build`) copia `app/` in `dist/` e genera `config.js` dalle Variables `SUPABASE_URL` e `SUPABASE_ANON_KEY` del repo (in mancanza, dal `web/config.js` di GymIN). Aggiunge anche la versione ai link, per invalidare la cache.

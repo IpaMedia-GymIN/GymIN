@@ -14,7 +14,7 @@ Guida completa passo-passo: artifact **GymIN Deploy**.
 ## 1 · Prepara la VM (una sola volta)
 
 ```bash
-git clone https://github.com/loriscuba/GymIN.git ~/gymin
+git clone https://github.com/IpaMedia-GymIN/GymIN.git ~/gymin
 cd ~/gymin
 bash deploy/host-init.sh          # nginx, git, certbot, rsync, firewall 80/443
 # bash deploy/host-init.sh --node # aggiungi Node.js 20 se ti servono backend
@@ -26,8 +26,8 @@ bash deploy/host-init.sh          # nginx, git, certbot, rsync, firewall 80/443
 sudo bash deploy/site.sh <nome> <sottodominio> --repo <giturl> [--webdir web] [--branch main]
 
 # esempi
-sudo bash deploy/site.sh gymin gymin.miodominio.it --repo https://github.com/loriscuba/GymIN.git
-sudo bash deploy/site.sh sito2 sito2.miodominio.it --repo https://github.com/loriscuba/sito2.git --webdir public
+sudo bash deploy/site.sh gymin gymin.miodominio.it --repo https://github.com/IpaMedia-GymIN/GymIN.git
+sudo bash deploy/site.sh sito2 sito2.miodominio.it --repo https://github.com/IpaMedia-Beach/sito2.git --webdir public
 ```
 
 - `<nome>` — cartella/etichetta interna del progetto (a-z, 0-9, - _)
@@ -65,7 +65,7 @@ default, regole firewall 22/80/443, subnet pubblica **e** la VM ARM (con retry
 finché c'è capacità). Lancialo **dalla OCI Cloud Shell** (CLI già autenticata):
 
 ```bash
-git clone https://github.com/loriscuba/gymin.git
+git clone https://github.com/IpaMedia-GymIN/GymIN.git
 bash gymin/deploy/oci-provision.sh
 # opzioni:  OCPUS=2 MEMORY_GB=12 DISPLAY_NAME=hub SLEEP_SECONDS=180 bash ...
 ```
@@ -79,7 +79,7 @@ Se la **rete esiste già** e ti manca solo la VM, usa lo script di retry
 **dalla OCI Cloud Shell** (CLI già autenticata):
 
 ```bash
-git clone https://github.com/loriscuba/gymin.git
+git clone https://github.com/IpaMedia-GymIN/GymIN.git
 bash gymin/deploy/oci-launch-retry.sh
 # opzioni:  OCPUS=1 MEMORY_GB=6 SLEEP_SECONDS=180 DISPLAY_NAME=hub bash ...
 ```

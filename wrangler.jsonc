@@ -1,0 +1,61 @@
+// Cloudflare Workers con file statici per GymIN.
+// Guida completa (variabili, segreti, DNS, collegamento a GitHub): deploy/CLOUDFLARE.md
+//
+//   produzione: ramo main → Worker "gymin"      → gymin.ipamedia.it e *-gymin.ipamedia.it
+//   test:       ramo test → Worker "gymin-test" → test-gymin.ipamedia.it (+ anteprime delle PR)
+//
+// Build:  bash scripts/build-cloudflare.sh      (crea dist/: web + accessi)
+// Deploy: npx wrangler deploy                    (produzione)
+//         npx wrangler deploy --env test         (test)
+//
+// Variabili Supabase: NON stanno in questo file. Vanno impostate su Cloudflare,
+// separatamente per ciascun Worker (Settings → Variables and Secrets), come "Secret":
+//   SUPABASE_URL        https://<ref>.supabase.co del progetto (produzione o demo)
+//   SUPABASE_ANON_KEY   chiave pubblica "publishable" (sb_publishable_...) dello stesso progetto
+// Il Worker le legge a ogni richiesta di /config.js e /accessi/config.js (cloudflare/worker.js).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gymin",
+  "main": "cloudflare/worker.js",
+  "compatibility_date": "2025-11-01",
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // config.js è generato dal Worker con le variabili dell'ambiente giusto
+    "run_worker_first": ["/config.js", "/accessi/config.js"]
+  },
+
+  // non cancella le variabili impostate dalla dashboard a ogni deploy
+  "keep_vars": true,
+
+  // Produzione: nessuna anteprima, così una PR non usa mai il database vero
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "gymin.ipamedia.it/*", "zone_name": "ipamedia.it" },
+    { "pattern": "*-gymin.ipamedia.it/*", "zone_name": "ipamedia.it" }
+  ],
+  "vars": {
+    "GYMIN_ENV": "produzione"
+    // SUPABASE_URL e SUPABASE_ANON_KEY: Secret del Worker "gymin" → progetto Supabase "GymIN produzione"
+  },
+
+  "env": {
+    "test": {
+      "name": "gymin-test",
+      // dominio personalizzato: ha la precedenza sulla regola *-gymin.ipamedia.it della produzione
+      // e riceve il suo certificato gratuito
+      "routes": [
+        { "pattern": "test-gymin.ipamedia.it", "custom_domain": true }
+      ],
+      "workers_dev": true,
+      "preview_urls": true,
+      "vars": {
+        "GYMIN_ENV": "test"
+        // SUPABASE_URL e SUPABASE_ANON_KEY: Secret del Worker "gymin-test" → progetto Supabase "GymIN demo"
+      }
+    }
+  }
+}
