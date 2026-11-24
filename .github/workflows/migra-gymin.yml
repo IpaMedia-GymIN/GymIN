@@ -1,0 +1,52 @@
+name: Migrazione GymIN (una tantum)
+
+on:
+  workflow_dispatch:
+    inputs:
+      conferma:
+        description: "Scrivi MIGRA per confermare"
+        required: true
+
+jobs:
+  migra:
+    if: inputs.conferma == 'MIGRA'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Installa psql 17
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q postgresql-common
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -y -q postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+
+      - name: 1/3 Copia dal vecchio progetto
+        env:
+          OLD: ${{ secrets.MIGRA_OLD_DB_URL }}
+        run: |
+          supabase db dump --remote="$OLD" -f roles.sql --role-only
+          supabase db dump --remote="$OLD" -f schema.sql
+          supabase db dump --remote="$OLD" -f data.sql --use-copy --data-only -x "storage.buckets_vectors" -x "storage.vector_indexes"
+          wc -l roles.sql schema.sql data.sql
+
+      - name: 2/3 Carica in GymIN produzione
+        env:
+          PROD: ${{ secrets.MIGRA_PROD_DB_URL }}
+        run: |
+          psql --single-transaction --variable ON_ERROR_STOP=1 \
+            --file roles.sql --file schema.sql \
+            --command 'SET session_replication_role = replica' \
+            --file data.sql --dbname "$PROD"
+
+      - name: 3/3 Carica in GymIN demo
+        env:
+          DEMO: ${{ secrets.MIGRA_DEMO_DB_URL }}
+        run: |
+          psql --single-transaction --variable ON_ERROR_STOP=1 \
+            --file roles.sql --file schema.sql \
+            --command 'SET session_replication_role = replica' \
+            --file data.sql --dbname "$DEMO"
